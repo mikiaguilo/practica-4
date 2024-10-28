@@ -1,0 +1,85 @@
+---
+title: "Ejercicios de estadística multivariante, parte I"
+subtitle: "20582- Análisis de Datos para el GMAT"
+date: today
+format:
+  html:
+    theme: lumen
+    toc: true
+    toc-depth: 3
+Rendering:
+    embed-resources: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(readr)
+```
+
+## Problema 1
+
+Simula un conjunto de datos que tenga 5 variables $X_1, X_2, X_3, X_4, X_5$, con 50 observaciones que sigan distribuciones normales con diferentes medias y varianzas cada una. Establece que una o más de las variables sea una combinación lineal de las otras. Por ejemplo, puedes definir que: $X_5 = 2X_1 + 3X_2$. Verifica que se cumple el teorema de la dimensión.
+
+### Respuesta
+```{r}
+#Anem a crear les v.a.
+set.seed(123)
+X1=rnorm(50,0,1)
+X2=rnorm(50,-25,3)
+X3=rnorm(50,80,10)
+X4=X1+X2
+X5=X1+3*X3-2*X2
+df = data.frame(X1,X2,X3,X4,X5)
+S=df %>% cov()
+qr(S)$rank
+
+```
+Efectivament es cumpleix el teorema del rang, tenim que el rang de R és 3, i tenim p-r=5-3=2 variables són combinació lineal de les altres r=3
+
+## Problema 2
+
+Simula un conjunto de datos $X$ con 4 variables y 50 observaciones que sigan distribuciones normales con diferentes medias y varianzas. 
+
+Define una matriz de transformación lineal $T$ de escalamiento (solo tiene valores diferentes de cero en su diagonal, lo que implica que cada variable se escala de manera independiente sin interacción con las otras variables), de la siguiente forma:
+
+* Escala la primera variable por 2.
+
+* Escala la segunda variable por 0.5.
+
+* Escala la tercera variable por 1.5.
+
+* Mantener la cuarta variable sin cambios.
+
+Ahora, transforma la matriz de datos $X$ en una nueva matriz $Y = X T$. Calcula el vector de medias $\mu_Y$ de las variables transformadas y la matriz de covarianzas $\Sigma_Y$. Verifica tus resultados con las funciones `colMeans()` y `cov()` de R.
+
+### Respuesta
+
+
+## Problema 3
+
+Genera una matriz de datos simulados de tamaño 
+$100 \times 3$ con distribución normal multivariante.
+
+Calcula la distancia de Mahalanobis para cada observación con respecto a la media del conjunto de datos.
+
+Considera la matriz de transformación lineal $T$ que mezcla las variables mediante rotaciones y escalamientos. Por ejemplo, puedes definir la matriz de transformación expresada de la siguiente forma:
+
+$$T = \begin{pmatrix}
+1.2 & 0.3 & 0.0 \\
+0.2 & 1.1 & 0.0 \\
+0.0 & 0.0 & 1.5
+\end{pmatrix}$$
+
+Aplique la transformación a la matriz de datos y calcule la distancia de Mahalanobis para cada observación con respecto a la media del conjunto de datos transformado.
+
+a. ¿Son las distancias de Mahalanobis iguales antes y después de la transformación lineal? Explica.
+
+b. La distancia de Mahalanobis al cuadrado debería seguir una distribución $\chi^2$ con $p$ grados de libertad, donde $p$ es el número de variables. Verifica si esto se cumple en tu caso. Justifica tu respuesta en función del test estadístico apropiado y un gráfico.
+
+### Respuesta al apartado a
+
+### Respuesta al apartado b
