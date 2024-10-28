@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -124,6 +158,22 @@ window.Quarto = {
 <p>Simula un conjunto de datos que tenga 5 variables <span class="math inline">\(X_1, X_2, X_3, X_4, X_5\)</span>, con 50 observaciones que sigan distribuciones normales con diferentes medias y varianzas cada una. Establece que una o más de las variables sea una combinación lineal de las otras. Por ejemplo, puedes definir que: <span class="math inline">\(X_5 = 2X_1 + 3X_2\)</span>. Verifica que se cumple el teorema de la dimensión.</p>
 <section id="respuesta" class="level3">
 <h3 class="anchored" data-anchor-id="respuesta">Respuesta</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Anem a crear les v.a.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>X1<span class="ot">=</span><span class="fu">rnorm</span>(<span class="dv">50</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>X2<span class="ot">=</span><span class="fu">rnorm</span>(<span class="dv">50</span>,<span class="sc">-</span><span class="dv">25</span>,<span class="dv">3</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>X3<span class="ot">=</span><span class="fu">rnorm</span>(<span class="dv">50</span>,<span class="dv">80</span>,<span class="dv">10</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>X4<span class="ot">=</span>X1<span class="sc">+</span>X2</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X5<span class="ot">=</span>X1<span class="sc">+</span><span class="dv">3</span><span class="sc">*</span>X3<span class="dv">-2</span><span class="sc">*</span>X2</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">data.frame</span>(X1,X2,X3,X4,X5)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>S<span class="ot">=</span>df <span class="sc">%&gt;%</span> <span class="fu">cov</span>()</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">qr</span>(S)<span class="sc">$</span>rank</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>Efectivament es cumpleix el teorema del rang, tenim que el rang de R és 3, i tenim p-r=5-3=2 variables són combinació lineal de les altres r=3</p>
 </section>
 </section>
 <section id="problema-2" class="level2">
@@ -139,6 +189,26 @@ window.Quarto = {
 <p>Ahora, transforma la matriz de datos <span class="math inline">\(X\)</span> en una nueva matriz <span class="math inline">\(Y = X T\)</span>. Calcula el vector de medias <span class="math inline">\(\mu_Y\)</span> de las variables transformadas y la matriz de covarianzas <span class="math inline">\(\Sigma_Y\)</span>. Verifica tus resultados con las funciones <code>colMeans()</code> y <code>cov()</code> de R.</p>
 <section id="respuesta-1" class="level3">
 <h3 class="anchored" data-anchor-id="respuesta-1">Respuesta</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>T<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">1.5</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">4</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>matriu<span class="ot">=</span> df<span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>X5) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Y<span class="ot">=</span> matriu <span class="sc">%*%</span> T</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>vector_mitjanes<span class="ot">=</span> Y <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),mean)) <span class="sc">%&gt;%</span> <span class="fu">distinct</span>()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(vector_mitjanes <span class="sc">%&gt;%</span> <span class="fu">as.vector</span>())                  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     V1        V2        V3       V4       
+[1,] 0.0688071 -12.28039 116.1915 -24.52637</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>S<span class="ot">=</span> Y <span class="sc">%&gt;%</span> <span class="fu">cov</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>S</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]        [,2]        [,3]      [,4]
+[1,]  3.42894089 -0.09021188   0.7998314  1.534047
+[2,] -0.09021188  1.84462796  -3.1456553  3.644150
+[3,]  0.79983144 -3.14565534 220.2258613 -5.891395
+[4,]  1.53404669  3.64414999  -5.8913950  8.055323</code></pre>
+</div>
+</div>
 </section>
 </section>
 <section id="problema-3" class="level2">
@@ -158,6 +228,268 @@ window.Quarto = {
 </ol>
 <section id="respuesta-al-apartado-a" class="level3">
 <h3 class="anchored" data-anchor-id="respuesta-al-apartado-a">Respuesta al apartado a</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mitjanes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>covariancia <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">2</span>, <span class="fl">1.8</span>, <span class="fl">0.9</span>, <span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>X_2<span class="ot">&lt;-</span> <span class="fu">mvrnorm</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">mu =</span> mitjanes, <span class="at">Sigma =</span> covariancia)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>X_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            [,1]       [,2]      [,3]
+  [1,] 2.1359659  3.5942551  9.317136
+  [2,] 2.2198383  4.5569293  8.261479
+  [3,] 2.5547049  4.7077049  9.412961
+  [4,] 3.7066588  6.4856919 11.413352
+  [5,] 4.3625757  5.0246322  9.737291
+  [6,] 3.0880414  5.3543739 10.509758
+  [7,] 3.4366558  3.7322924  9.312455
+  [8,] 3.7232193  5.4137839 10.456536
+  [9,] 2.4631770  4.2597293  7.777279
+ [10,] 1.8843724  5.2206554 11.542905
+ [11,] 1.9419606  3.5859498  8.521164
+ [12,] 3.2508693  6.5437476 11.700055
+ [13,] 3.8235552  6.8363544 11.816940
+ [14,] 1.8457051 -0.6061017  5.865176
+ [15,] 4.9622634  4.7936020 10.721070
+ [16,] 4.0074424  4.1974811  9.418622
+ [17,] 2.4635651  3.9491981  9.276771
+ [18,] 2.0339262  6.4815509 10.428142
+ [19,] 2.3106206  4.0589409  9.630364
+ [20,] 2.8647903  4.5472636  9.323081
+ [21,] 3.6118993  4.3960539 11.118791
+ [22,] 3.8119215  5.1322954  9.249936
+ [23,] 3.5781932  5.0084245  9.834575
+ [24,] 0.5111107  1.8659634  7.482386
+ [25,] 4.0881422  5.7610945 11.143703
+ [26,] 3.4023936  6.9690753 11.310380
+ [27,] 3.1805135  5.1893920  9.575118
+ [28,] 2.8478827  4.4624980  9.623894
+ [29,] 3.0488999  4.2230965  9.371724
+ [30,] 3.4399944  6.2220406  9.973649
+ [31,] 2.4033305  7.0570485 11.569846
+ [32,] 2.7407154  2.8160558  8.297922
+ [33,] 3.5066694  5.3822270 10.516418
+ [34,] 3.4263121  6.7055257 10.815083
+ [35,] 3.2077298  5.1905316 10.488127
+ [36,] 3.1305289  4.8609434 10.761674
+ [37,] 2.4257105  3.1082223  8.636470
+ [38,] 4.2814624  4.7721783  9.367759
+ [39,] 2.3806360  4.0314103  8.826078
+ [40,] 3.4236059  5.6183201 10.796795
+ [41,] 3.8022759  4.5542967  9.398120
+ [42,] 4.1678575  5.8542811  9.592462
+ [43,] 3.7522245  4.2933302 10.119690
+ [44,] 3.1909007  6.7670017 10.957538
+ [45,] 5.4116670  6.6481513 11.454374
+ [46,] 1.6648119  1.4821402  7.815569
+ [47,] 4.0981072  3.8163292  8.780360
+ [48,] 2.7079724  7.0227261 12.101175
+ [49,] 3.4972826  6.3011256 10.374948
+ [50,] 4.7402933  6.5900744 11.410515
+ [51,] 1.0501558  1.8436155  7.016605
+ [52,] 1.6672129  3.5327961  7.831189
+ [53,] 2.4973099  5.8399360 10.190750
+ [54,] 1.8493081  4.4540897  9.314556
+ [55,] 2.8832382  5.5521732 10.837087
+ [56,] 3.6758793  6.1275647 10.029435
+ [57,] 1.9896275  6.8408533 11.077076
+ [58,] 3.4889945  5.6319702 11.073260
+ [59,] 2.9268739  2.3052016  7.471984
+ [60,] 4.5765888  4.4791144 10.027354
+ [61,] 3.8835999  4.3298513  9.933691
+ [62,] 3.4035805  4.3487557  9.716719
+ [63,] 0.8436883  3.3756800  8.664064
+ [64,] 2.8792448  5.9846575 10.698053
+ [65,] 3.3958650  6.7340068 11.226992
+ [66,] 2.6532524  3.0268682  6.707191
+ [67,] 3.2083355  5.7306139 10.575219
+ [68,] 2.4698654  6.3119707 11.223225
+ [69,] 5.0416883  6.2915247 11.775749
+ [70,] 4.5592719  6.8902429 11.494484
+ [71,] 3.4223240  5.2926246 11.415251
+ [72,] 3.5153488  3.6487042  9.183251
+ [73,] 1.2564530  3.6162802  8.615432
+ [74,] 2.9615364  3.3682441  9.454453
+ [75,] 2.8842041  5.9059120 10.268508
+ [76,] 3.5167086  4.8609207  9.711486
+ [77,] 3.2338546  5.3893501 11.837028
+ [78,] 3.9425564  5.9280732 10.943159
+ [79,] 3.3383560  2.8131236  9.301295
+ [80,] 3.7584791  6.9762426 10.863342
+ [81,] 2.5395586  1.7944154  7.196857
+ [82,] 2.1220446  5.3399845 10.336070
+ [83,] 2.2893961  4.7733333  9.861818
+ [84,] 4.7064088  6.0264188 10.546654
+ [85,] 3.6550655  5.7743270 10.767295
+ [86,] 2.3508133  7.8739883 11.536475
+ [87,] 2.0232380  5.4296643 10.595094
+ [88,] 2.5008324  4.0922323  9.834892
+ [89,] 3.6129666  4.9301033  8.693878
+ [90,] 3.3345209  5.8597989 11.522495
+ [91,] 4.0708123  6.4081443 10.586167
+ [92,] 4.0225761  5.3824518 10.790175
+ [93,] 3.2727919  2.0751455  8.091492
+ [94,] 3.7854139  6.7852996 11.476530
+ [95,] 3.1208879  5.4776433 10.013313
+ [96,] 0.4291953  2.5006209  7.573860
+ [97,] 3.1093499  4.9993129 10.291032
+ [98,] 3.3705852  6.9726801 12.213729
+ [99,] 2.8271308  6.8782251 10.223444
+[100,] 2.6681505  4.7856264  8.753961</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>T_2<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">1.2</span>,<span class="fl">0.3</span>,<span class="dv">0</span>,<span class="fl">0.2</span>,<span class="fl">1.1</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">1.5</span>), <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Y_2<span class="ot">=</span> X_2 <span class="sc">%*%</span> T_2</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>Y_2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]       [,2]      [,3]
+  [1,] 3.641436  4.3808737 13.975704
+  [2,] 4.030885  5.4565899 12.392218
+  [3,] 4.477957  5.6894164 14.119441
+  [4,] 6.393698  7.8755928 17.120029
+  [5,] 6.742481  6.3996106 14.605937
+  [6,] 5.311962  6.5074196 15.764637
+  [7,] 5.243675  4.7928528 13.968683
+  [8,] 6.091998  6.6998061 15.684804
+  [9,] 4.233731  5.1783376 11.665919
+ [10,] 3.827444  6.1195954 17.314358
+ [11,] 3.406138  4.3329369 12.781745
+ [12,] 5.864167  7.8482962 17.550082
+ [13,] 6.639173  8.2847009 17.725410
+ [14,] 2.033016 -0.2975709  8.797765
+ [15,] 7.392797  6.2654149 16.081605
+ [16,] 6.068175  5.4187177 14.127933
+ [17,] 4.141038  4.8368309 13.915156
+ [18,] 4.385177  7.5364912 15.642213
+ [19,] 3.990427  4.9269591 14.445546
+ [20,] 4.801927  5.5749480 13.984621
+ [21,] 5.653095  5.5580391 16.678186
+ [22,] 6.113994  6.4079093 13.874905
+ [23,] 5.796359  6.2249056 14.751862
+ [24,] 1.173122  2.1547819 11.223578
+ [25,] 6.634099  7.1548324 16.715554
+ [26,] 6.173595  8.3464616 16.965569
+ [27,] 5.373434  6.3444339 14.362677
+ [28,] 4.756209  5.4783244 14.435842
+ [29,] 4.925609  5.2551861 14.057586
+ [30,] 5.994605  7.5322435 14.960473
+ [31,] 5.001111  8.2434195 17.354769
+ [32,] 4.133675  3.6458045 12.446883
+ [33,] 5.822671  6.6217836 15.774627
+ [34,] 6.123232  8.0613407 16.222625
+ [35,] 5.406435  6.3511307 15.732190
+ [36,] 5.214918  5.9731435 16.142511
+ [37,] 3.843319  3.9041867 12.954705
+ [38,] 6.569408  6.1056886 14.051638
+ [39,] 4.066186  4.9106786 13.239117
+ [40,] 5.793823  6.8648733 16.195192
+ [41,] 5.929020  5.7701816 14.097180
+ [42,] 6.757713  7.2732807 14.388693
+ [43,] 5.790668  5.4731081 15.179535
+ [44,] 5.859181  8.0818820 16.436308
+ [45,] 8.488446  8.3952998 17.181561
+ [46,] 2.442416  1.9633166 11.723353
+ [47,] 6.062627  5.0175835 13.170541
+ [48,] 5.356385  8.2665932 18.151762
+ [49,] 6.087077  7.6306946 15.562422
+ [50,] 7.665374  8.1971405 17.115772
+ [51,] 1.813272  2.2380082 10.524908
+ [52,] 3.060494  4.2195183 11.746783
+ [53,] 4.748753  6.9233916 15.286125
+ [54,] 3.555397  5.2693603 13.971833
+ [55,] 5.125538  6.6840382 16.255630
+ [56,] 6.249325  7.4754970 15.044152
+ [57,] 4.439809  7.9228641 16.615613
+ [58,] 5.876384  6.8929661 16.609890
+ [59,] 4.203809  3.1210966 11.207975
+ [60,] 6.835641  5.8423436 15.041031
+ [61,] 5.959275  5.5395565 14.900536
+ [62,] 5.388923  5.4643474 14.575079
+ [63,] 2.025130  3.8819857 12.996095
+ [64,] 5.250491  7.1589722 16.047080
+ [65,] 6.095240  8.0865805 16.840489
+ [66,] 4.091963  3.8602055 10.060786
+ [67,] 5.569187  6.9453424 15.862828
+ [68,] 4.857430  7.4371408 16.834838
+ [69,] 7.937483  7.9290149 17.663623
+ [70,] 7.538199  8.4911215 17.241726
+ [71,] 5.694576  6.5063519 17.122877
+ [72,] 5.313030  4.7166443 13.774877
+ [73,] 2.592628  4.2291988 12.923149
+ [74,] 4.564317  4.2973758 14.181679
+ [75,] 5.232819  7.0733440 15.402762
+ [76,] 5.678326  6.0503545 14.567228
+ [77,] 5.497431  6.5750561 17.755542
+ [78,] 6.509490  7.3093918 16.414739
+ [79,] 4.849964  3.7621071 13.951942
+ [80,] 6.603048  8.4255626 16.295014
+ [81,] 3.585795  2.4817686 10.795285
+ [82,] 4.148449  6.2983918 15.504105
+ [83,] 4.179275  5.7085459 14.792727
+ [84,] 7.455616  7.5703424 15.819982
+ [85,] 6.118377  7.0827728 16.150943
+ [86,] 5.183172  9.1315498 17.304712
+ [87,] 4.056785  6.3772784 15.892641
+ [88,] 4.228669  5.0016221 14.752339
+ [89,] 5.814591  6.1457069 13.040817
+ [90,] 5.759365  7.1126830 17.283742
+ [91,] 6.807418  7.8631212 15.879251
+ [92,] 6.441827  6.7252123 16.185262
+ [93,] 4.549894  2.9372185 12.137239
+ [94,] 6.578087  8.2209124 17.214796
+ [95,] 5.388358  6.6495852 15.019969
+ [96,] 1.265221  2.8365220 11.360790
+ [97,] 5.231014  6.1211141 15.436548
+ [98,] 6.136506  8.3440651 18.320594
+ [99,] 5.456025  8.1314738 15.335166
+[100,] 4.637468  5.7978192 13.130941</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vector_mitjanes_X2<span class="ot">=</span><span class="fu">colMeans</span>(X_2)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>vector_mitjanes_Y2<span class="ot">=</span><span class="fu">colMeans</span>(Y_2)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>S_x2<span class="ot">=</span>X_2 <span class="sc">%&gt;%</span> <span class="fu">cov</span>()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>S_y2<span class="ot">=</span> Y_2 <span class="sc">%&gt;%</span> <span class="fu">cov</span>()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>dist_mahalanobis_x2 <span class="ot">&lt;-</span> <span class="fu">mahalanobis</span>(X_2, <span class="at">center =</span> vector_mitjanes_X2, <span class="at">cov =</span>S_x2)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>dist_mahalanobis_y2 <span class="ot">&lt;-</span> <span class="fu">mahalanobis</span>(Y_2, <span class="at">center =</span> vector_mitjanes_Y2, <span class="at">cov =</span>S_y2)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>dist_mahalanobis_x2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1]  1.9564577  4.9365757  0.5065775  1.2551620  2.7777694  0.2973472
+  [7]  1.4415426  0.4628458  6.8237187  9.1573181  1.7917373  2.1384641
+ [13]  2.0211238 13.7679098  6.0853718  2.1130405  0.6811856  4.6071473
+ [19]  1.3049237  0.3063137  6.6203014  2.9437591  0.4488002  8.3381570
+ [25]  1.6631805  1.8928249  0.8049789  0.1402930  0.2836908  2.9603502
+ [31]  4.3878637  2.1207887  0.3057669  1.8551369  0.3661809  2.0504752
+ [37]  1.5776376  3.2660174  0.9475341  0.4958636  1.4012642  4.8844636
+ [43]  1.9905611  1.8921710  6.0203390  6.5162686  3.7642926  4.6283822
+ [49]  1.7124188  3.1323439  6.4450254  4.2385821  1.5457895  1.8137991
+ [55]  1.0163759  2.5596736  5.3106354  1.1419922  4.3539759  3.8945247
+ [61]  1.7580061  0.5665595  5.7748445  0.8197743  1.4293732  9.9176688
+ [67]  0.2809420  2.6699658  5.0412157  2.8236618  3.7578365  1.6856464
+ [73]  3.7620836  2.4485354  0.9689334  0.4357549  6.4635119  0.9435304
+ [79]  4.9747846  2.8377461  4.9567535  1.9018540  0.8935221  3.3991458
+ [85]  0.4986519  7.5272144  2.7632991  1.4780358  4.9171175  2.4417470
+ [91]  2.1787171  1.3982285  5.1600428  1.5241841  0.3779927  8.1218395
+ [97]  0.2633705  3.4849120  5.4016285  2.7863565</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dist_mahalanobis_y2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1]  1.9564577  4.9365757  0.5065775  1.2551620  2.7777694  0.2973472
+  [7]  1.4415426  0.4628458  6.8237187  9.1573181  1.7917373  2.1384641
+ [13]  2.0211238 13.7679098  6.0853718  2.1130405  0.6811856  4.6071473
+ [19]  1.3049237  0.3063137  6.6203014  2.9437591  0.4488002  8.3381570
+ [25]  1.6631805  1.8928249  0.8049789  0.1402930  0.2836908  2.9603502
+ [31]  4.3878637  2.1207887  0.3057669  1.8551369  0.3661809  2.0504752
+ [37]  1.5776376  3.2660174  0.9475341  0.4958636  1.4012642  4.8844636
+ [43]  1.9905611  1.8921710  6.0203390  6.5162686  3.7642926  4.6283822
+ [49]  1.7124188  3.1323439  6.4450254  4.2385821  1.5457895  1.8137991
+ [55]  1.0163759  2.5596736  5.3106354  1.1419922  4.3539759  3.8945247
+ [61]  1.7580061  0.5665595  5.7748445  0.8197743  1.4293732  9.9176688
+ [67]  0.2809420  2.6699658  5.0412157  2.8236618  3.7578365  1.6856464
+ [73]  3.7620836  2.4485354  0.9689334  0.4357549  6.4635119  0.9435304
+ [79]  4.9747846  2.8377461  4.9567535  1.9018540  0.8935221  3.3991458
+ [85]  0.4986519  7.5272144  2.7632991  1.4780358  4.9171175  2.4417470
+ [91]  2.1787171  1.3982285  5.1600428  1.5241841  0.3779927  8.1218395
+ [97]  0.2633705  3.4849120  5.4016285  2.7863565</code></pre>
+</div>
+</div>
 </section>
 <section id="respuesta-al-apartado-b" class="level3">
 <h3 class="anchored" data-anchor-id="respuesta-al-apartado-b">Respuesta al apartado b</h3>

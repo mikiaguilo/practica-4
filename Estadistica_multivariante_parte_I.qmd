@@ -58,6 +58,13 @@ Ahora, transforma la matriz de datos $X$ en una nueva matriz $Y = X T$. Calcula 
 
 ### Respuesta
 ```{r}
+T=matrix(c(2,0,0,0,0,0.5,0,0,0,0,1.5,0,0,0,0,1), nrow = 4)
+matriu= df%>% select(-X5) %>% as.matrix()
+Y= matriu %*% T
+vector_mitjanes= Y %>% as.data.frame() %>%mutate(across(everything(),mean)) %>% distinct()
+t(vector_mitjanes %>% as.vector())                  
+S= Y %>% cov()
+S
 
 ```
 
@@ -84,5 +91,22 @@ a. ¿Son las distancias de Mahalanobis iguales antes y después de la transforma
 b. La distancia de Mahalanobis al cuadrado debería seguir una distribución $\chi^2$ con $p$ grados de libertad, donde $p$ es el número de variables. Verifica si esto se cumple en tu caso. Justifica tu respuesta en función del test estadístico apropiado y un gráfico.
 
 ### Respuesta al apartado a
+```{r}
+library(MASS)
+mitjanes <- c(3, 5, 10)
+covariancia <- matrix(c(1, 0.8, 0.8, 1, 2.5, 2, 1.8, 0.9, 2), nrow = 3)
+X_2<- mvrnorm(n = 100, mu = mitjanes, Sigma = covariancia)
+T_2=matrix(c(1.2,0.3,0,0.2,1.1,0.0,0.0,0.0,1.5), nrow = 3)
+Y_2= X_2 %*% T_2
+vector_mitjanes_X2=colMeans(X_2)
+vector_mitjanes_Y2=colMeans(Y_2)
+S_x2=X_2 %>% cov()
+S_y2= Y_2 %>% cov()
+dist_mahalanobis_x2 <- mahalanobis(X_2, center = vector_mitjanes_X2, cov =S_x2)
+dist_mahalanobis_y2 <- mahalanobis(Y_2, center = vector_mitjanes_Y2, cov =S_y2)
+dist_mahalanobis_x2
+dist_mahalanobis_y2
 
+```
+Un cop hem calculat les distàncies, hem comprovat que les distàncies no varien respectr uns transformació lineal
 ### Respuesta al apartado b
