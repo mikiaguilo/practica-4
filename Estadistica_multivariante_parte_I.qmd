@@ -57,6 +57,9 @@ Define una matriz de transformación lineal $T$ de escalamiento (solo tiene valo
 Ahora, transforma la matriz de datos $X$ en una nueva matriz $Y = X T$. Calcula el vector de medias $\mu_Y$ de las variables transformadas y la matriz de covarianzas $\Sigma_Y$. Verifica tus resultados con las funciones `colMeans()` y `cov()` de R.
 
 ### Respuesta
+```{r}
+
+```
 
 
 ## Problema 3
